@@ -95,6 +95,37 @@ export async function dbFindUser(email: string, password: string) {
   return data?.[0] || null;
 }
 
+// ---------- CONFIG ----------
+export async function dbUpdateConfig(cfg: {
+  id?: number;
+  acrylamide_per_kg_gel: number;
+  glycerin_per_kg_gel: number;
+  water_per_kg_gel: number;
+  photoinitiator_per_kg_gel: number;
+  bis_per_kg_gel: number;
+  gel_density: number;
+}) {
+  const id = cfg.id ?? 1;
+  return supabase.from('config').update(cfg).eq('id', id);
+}
+
+// ---------- PRICES ----------
+export async function dbUpdatePrices(prices: {
+  id?: number;
+  acrylamide_usd_per_kg?: number;
+  glycerin_usd_per_kg?: number;
+  water_usd_per_l?: number;
+  photoinitiator_usd_per_ml?: number;
+  bis_usd_per_g?: number;
+  tela_gorro_usd_per_kg?: number;
+  tela_rodillera_usd_per_kg?: number;
+  iva?: number;
+  exchange_rate?: number;
+}) {
+  const id = prices.id ?? 1;
+  return supabase.from('prices').update(prices).eq('id', id);
+}
+
 // ---------- PRODUCTS ----------
 export async function dbInsertProduct(p: { id: string; name: string; weight_g: number; gel_fraction: number }) {
   return supabase.from('products').insert(p);

@@ -15,6 +15,8 @@ import {
   dbInsertProduct,
   dbUpdateProduct,
   dbDeleteProduct,
+  dbUpdateConfig,
+  dbUpdatePrices,
 } from "./db";
 
 /** Tipos */
@@ -136,6 +138,46 @@ export default function App() {
   const [toSew, setToSew] = useState<Record<string, number>>({});
   const [sewing, setSewing] = useState<Record<string, number>>({});
   const [prices, setPrices] = useState<PriceConfig>(DEFAULT_PRICES);
+
+  // Wrappers para persistir cambios en Supabase
+  const updateCoeff = (newCoeff: Coeff) => {
+    setCoeff(newCoeff);
+    dbUpdateConfig({
+      acrylamide_per_kg_gel: newCoeff.acrylamideKgPerKgGel,
+      glycerin_per_kg_gel: newCoeff.glycerinKgPerKgGel,
+      water_per_kg_gel: newCoeff.waterLPerKgGel,
+      photoinitiator_per_kg_gel: newCoeff.photoinitiatorMlPerKgGel,
+      bis_per_kg_gel: newCoeff.bisGPerKgGel,
+      gel_density: gelDensity,
+    });
+  };
+
+  const updateGelDensity = (newDensity: number) => {
+    setGelDensity(newDensity);
+    dbUpdateConfig({
+      acrylamide_per_kg_gel: coeff.acrylamideKgPerKgGel,
+      glycerin_per_kg_gel: coeff.glycerinKgPerKgGel,
+      water_per_kg_gel: coeff.waterLPerKgGel,
+      photoinitiator_per_kg_gel: coeff.photoinitiatorMlPerKgGel,
+      bis_per_kg_gel: coeff.bisGPerKgGel,
+      gel_density: newDensity,
+    });
+  };
+
+  const updatePrices = (newPrices: PriceConfig) => {
+    setPrices(newPrices);
+    dbUpdatePrices({
+      acrylamide_usd_per_kg: newPrices.acrylamideUsdPerKg,
+      glycerin_usd_per_kg: newPrices.glycerinUsdPerKg,
+      water_usd_per_l: newPrices.waterUsdPerL,
+      photoinitiator_usd_per_ml: newPrices.photoinitiatorUsdPerMl,
+      bis_usd_per_g: newPrices.bisUsdPerG,
+      tela_gorro_usd_per_kg: newPrices.telaGorroUsdPerKg,
+      tela_rodillera_usd_per_kg: newPrices.telaRodilleraUsdPerKg,
+      iva: newPrices.IVA,
+      exchange_rate: newPrices.exchangeRate,
+    });
+  };
 
   // Carga inicial desde DB (si usás tus helpers db*)
   useEffect(() => {
@@ -450,8 +492,8 @@ export default function App() {
 
         {activeTab==="stock" && (<StockTab inventory={inventory} setInventory={setInventory} fabric={fabric} setFabric={setFabric} addStock={addStock} addFabric={addFabric} />)}
         {activeTab==="costura" && (<SewingTab products={products} sewing={sewing} onRetire={(d)=>retireFromSewing(d)} onRetireAll={()=>retireAll()} />)}
-        {activeTab==="compras" && (<ComprasTab products={products} usagePerUnit={(p)=>usagePerUnit(p)} prices={prices} setPrices={setPrices} />)}
-        {activeTab==="config" && (<ConfigTab products={products} setProducts={setProducts} coeff={coeff} setCoeff={setCoeff} gelDensity={gelDensity} setGelDensity={setGelDensity} />)}
+        {activeTab==="compras" && (<ComprasTab products={products} usagePerUnit={(p)=>usagePerUnit(p)} prices={prices} setPrices={updatePrices} />)}
+        {activeTab==="config" && (<ConfigTab products={products} setProducts={setProducts} coeff={coeff} setCoeff={updateCoeff} gelDensity={gelDensity} setGelDensity={updateGelDensity} />)}
         {activeTab==="empleados" && (<UsersTabSupabase />)}
       </main>
     </div>
