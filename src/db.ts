@@ -51,7 +51,8 @@ export async function dbUpdateInventory(inv: {
   acrylamide_kg: number; glycerin_kg: number; water_l: number; photoinitiator_ml: number; bis_g: number;
 }) {
   const id = inv.id ?? 1;
-  return supabase.from('inventory').update(inv).eq('id', id);
+  const { id: _, ...data } = inv;
+  return supabase.from('inventory').update(data).eq('id', id);
 }
 
 // ---------- TELAS ----------
@@ -60,7 +61,8 @@ export async function dbUpdateFabric(fab: {
   tela_gorro_nariz: number; tela_gorro_detras: number; tela_rodillera_m: number; tela_rodillera_xl: number;
 }) {
   const id = fab.id ?? 1;
-  return supabase.from('fabric_inventory').update(fab).eq('id', id);
+  const { id: _, ...data } = fab;
+  return supabase.from('fabric_inventory').update(data).eq('id', id);
 }
 
 // ---------- PLAN ----------
@@ -106,7 +108,8 @@ export async function dbUpdateConfig(cfg: {
   gel_density: number;
 }) {
   const id = cfg.id ?? 1;
-  return supabase.from('config').update(cfg).eq('id', id);
+  const { id: _, ...data } = cfg;
+  return supabase.from('config').update(data).eq('id', id);
 }
 
 // ---------- PRICES ----------
@@ -123,7 +126,8 @@ export async function dbUpdatePrices(prices: {
   exchange_rate?: number;
 }) {
   const id = prices.id ?? 1;
-  return supabase.from('prices').update(prices).eq('id', id);
+  const { id: _, ...data } = prices;
+  return supabase.from('prices').update(data).eq('id', id);
 }
 
 // ---------- PRODUCTS ----------

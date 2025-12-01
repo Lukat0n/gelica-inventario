@@ -420,24 +420,29 @@ export default function App() {
 
   // Redirección de tab según rol
   useEffect(() => {
-    if (!profile) return;
-    if (!canSeeTab(profile.role, activeTab)) {
-      const fallback = (profile.role === "ADMIN") ? "empleados" : "produccion";
+    const currentProfile = profile || { id: 'test', name: 'Usuario Test', role: 'CEO' as Role, email: 'test@test.com' };
+    if (!currentProfile) return;
+    if (!canSeeTab(currentProfile.role, activeTab)) {
+      const fallback = (currentProfile.role === "ADMIN") ? "empleados" : "produccion";
       setActiveTab(fallback as any);
     }
   }, [profile, activeTab]);
 
   // === Render ===
-  if (booting || loadingProfile) return <div className="p-6">Cargando…</div>;
+  if (booting) return <div className="p-6">Cargando…</div>;
 
-  if (!session) {
-    return <Login onLogin={async (email, password) => {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) alert(error.message);
-    }} />;
-  }
+  // TEMPORAL: Deshabilitado login para testing
+  // if (!session) {
+  //   return <Login onLogin={async (email, password) => {
+  //     const { error } = await supabase.auth.signInWithPassword({ email, password });
+  //     if (error) alert(error.message);
+  //   }} />;
+  // }
 
-  if (!profile) return <div className="p-6">Cargando perfil…</div>;
+  // if (!profile) return <div className="p-6">Cargando perfil…</div>;
+  
+  // Profile temporal para testing
+  const testProfile = profile || { id: 'test', name: 'Usuario Test', role: 'CEO' as Role, email: 'test@test.com' };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -448,13 +453,13 @@ export default function App() {
             <h1 className="text-2xl font-bold">Inventario</h1>
           </div>
           <nav className="flex items-center gap-1">
-            {canSeeTab(profile.role, "produccion") && <TabButton active={activeTab==="produccion"} onClick={()=>setActiveTab("produccion")}>Producción</TabButton>}
-            {canSeeTab(profile.role, "stock") && <TabButton active={activeTab==="stock"} onClick={()=>setActiveTab("stock")}>Stock</TabButton>}
-            {canSeeTab(profile.role, "costura") && <TabButton active={activeTab==="costura"} onClick={()=>setActiveTab("costura")}>Costura</TabButton>}
-            {canSeeTab(profile.role, "compras") && <TabButton active={activeTab==="compras"} onClick={()=>setActiveTab("compras")}>Compras</TabButton>}
-            {canSeeTab(profile.role, "config") && <TabButton active={activeTab==="config"} onClick={()=>setActiveTab("config")}>Configuración</TabButton>}
-            {canSeeTab(profile.role, "empleados") && <TabButton active={activeTab==="empleados"} onClick={()=>setActiveTab("empleados")}>Rangos/Empleados</TabButton>}
-            <div className="ml-3 text-sm text-slate-500">{profile.name} ({profile.role})</div>
+            {canSeeTab(testProfile.role, "produccion") && <TabButton active={activeTab==="produccion"} onClick={()=>setActiveTab("produccion")}>Producción</TabButton>}
+            {canSeeTab(testProfile.role, "stock") && <TabButton active={activeTab==="stock"} onClick={()=>setActiveTab("stock")}>Stock</TabButton>}
+            {canSeeTab(testProfile.role, "costura") && <TabButton active={activeTab==="costura"} onClick={()=>setActiveTab("costura")}>Costura</TabButton>}
+            {canSeeTab(testProfile.role, "compras") && <TabButton active={activeTab==="compras"} onClick={()=>setActiveTab("compras")}>Compras</TabButton>}
+            {canSeeTab(testProfile.role, "config") && <TabButton active={activeTab==="config"} onClick={()=>setActiveTab("config")}>Configuración</TabButton>}
+            {canSeeTab(testProfile.role, "empleados") && <TabButton active={activeTab==="empleados"} onClick={()=>setActiveTab("empleados")}>Rangos/Empleados</TabButton>}
+            <div className="ml-3 text-sm text-slate-500">{testProfile.name} ({testProfile.role})</div>
             <button type="button" className="ml-2 px-3 py-1.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800" onClick={async ()=>{ await supabase.auth.signOut(); }}>
               Salir
             </button>
